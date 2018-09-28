@@ -1,9 +1,8 @@
 package com.vue.adminlte4j.model;
 
-import com.vue.adminlte4j.model.builder.FormModelBuilder;
 import com.vue.adminlte4j.model.builder.FormModelUtils;
+import com.vue.adminlte4j.model.builder.TableBuilder;
 import com.vue.adminlte4j.model.builder.TreeNodeBuilder;
-import com.vue.adminlte4j.model.form.FormModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +20,16 @@ public class UIModel extends HashMap implements Map {
     /** 失败返回的code   ***/
     public static final int FAIL    = 0 ;
 
+    /**
+     *  未登陆code
+     */
+    public static final int UNAUTHORIZED = 401 ;
+
+    /**
+     *  未登陆的跳转url
+     */
+    public static final String LOCATION = "location" ;
+
     /** 菜单列表Key     ***/
     public static final String MENU         = "menu_items" ;
 
@@ -32,6 +41,11 @@ public class UIModel extends HashMap implements Map {
 
     /** 表格数据的默认key ***/
     public static final String TABLE_DATA   = "tableData" ;
+
+    /**
+     * 数据字典数据
+     */
+    public static final String DICT_DATA    = "dictData" ;
 
     /** 树形数据的默认key ***/
     public static final String TREE_DATA    = "treeData" ;
@@ -45,6 +59,16 @@ public class UIModel extends HashMap implements Map {
     public static final String CODE         = "code"  ;
     /** 返回信息的key        ***/
     public static final String MSG          = "msg" ;
+
+    /**
+     * FormModel key
+     */
+    public static final String FORM_MODEL   = "formModel";
+
+    /**
+     *  用户名称对应的Key
+     */
+    public static final String USER_NAME    = "user_name" ;
 
     /**
      * 返回菜单列表
@@ -100,10 +124,29 @@ public class UIModel extends HashMap implements Map {
         return put(LOGIN_URL , loginUrl) ;
     }
 
-    public UIModel setCode(int code) {
+    /**
+     * 设置展示的用户名称
+     * @param userName
+     * @return
+     */
+    public UIModel setUserName(String userName) {
+        return put(USER_NAME , userName) ;
+    }
+
+    public UIModel code(int code) {
         return put(CODE , code) ;
     }
 
+    /**
+     * 设置提示消息
+     * @param msg
+     * @return
+     */
+    public UIModel msg(String msg) {
+        return put(MSG , msg) ;
+    }
+
+    @Deprecated
     public UIModel setMsg(String msg) {
         return put(MSG , msg) ;
     }
@@ -138,31 +181,66 @@ public class UIModel extends HashMap implements Map {
 
 
     public UIModel formData(Object bean) {
-        return put(FormModelUtils.getFormModel(bean)).data(bean) ;
+        if(bean == null )
+            throw new NullPointerException("formData param can not be null!") ;
+        return formData(bean , bean.getClass()) ;
     }
 
+    public UIModel formData(Object bean , Class clsType) {
+        return put(FormModelUtils.getFormModel(clsType)).data(bean) ;
+    }
+
+    public UIModel tableData(TableBuilder builder){
+        return put(TABLE_DATA , builder.build());
+    }
 
     public UIModel tableData(TableData tableData) {
         return put(TABLE_DATA , tableData) ;
     }
 
+    /**
+     * 存放key=treeData, value为转换后的treeNode结构数据列表
+     * @param elements
+     * @return
+     */
+    public UIModel treeData(List<? extends ITreeNode> elements) {
+        return  treeData(elements , TreeNodeBuilder.INSTANCE);
+    }
+
+    /**
+     * 存放key=treeData, value为转换后的treeNode结构数据列表
+     * @param elements
+     * @param treeNodeBuilder
+     * @return
+     */
     public UIModel treeData(List<? extends Object> elements,TreeNodeBuilder treeNodeBuilder) {
         return  put(TREE_DATA , treeNodeBuilder.transform(elements));
     }
 
     public static UIModel success() {
-        return newInstance(SUCCESS) ;
+        return newInstance().code(SUCCESS);
     }
 
     public static UIModel fail() {
-        return newInstance(FAIL);
+        return newInstance().code(FAIL);
     }
 
-    public static UIModel newInstance(int code) {
-        UIModel uiModel = new UIModel() ;
-        return uiModel.setCode(code) ;
+    /**
+     * 创建一个未登陆实例返回
+     * @return
+     */
+    public static UIModel unauthorized(String location) {
+        return newInstance().code(UNAUTHORIZED).put(LOCATION , location) ;
     }
 
+    public static UIModel newInstance() {
+        return new UIModel() ;
+    }
+
+    /**
+     * simple toJsonString, 不对其进行转义， 只能在简单的字符串情况下用 ， 对象不进行处理
+     * @return
+     */
     public String toJsonString() {
 
         Iterator<Entry<String,Object>> i = entrySet().iterator();

@@ -1,11 +1,13 @@
 <template>
-    <button :type="btnType" class="btn" :class="[isBlock?'btn-block':'', btnTheme, disabled, flat, size, getAlign]">
-                {{name}}
-                <slot></slot>
+    <button :type="btnType" :class="classes"
+        @click="handleClick">
+        <li v-if="icon" :class="icon">&nbsp;</li>
+        <slot></slot>
     </button>
 </template>
 
 <script>
+    var prefixCls='btn'
     export default {
         name: 'v-button',
         props: {
@@ -19,53 +21,43 @@
             },
             theme: {
                 type: String,
-                default: 'success'
+                default: 'default'
             },
-            isDisabled: {
+            disabled: {
                 type: Boolean,
                 default: false
             },
-            isFlat: {
+            flat: {
                 type: Boolean,
                 default: false
             },
             size: {
-                type: String,
-                default: 'lg'
+                type: String
             },
-            isBlock: {
+            block: {
                 type: Boolean,
-                default: true
+                default: false
             },
             align: {
                 type: String,
                 default: ''
+            } ,
+            icon : String
+        },
+        methods: {
+            handleClick(event) {
+                this.$emit('click', event);
             }
-        },
-        created () {
-
-        },
+        } ,
         computed: {
-
-            btnTheme () {
-                return `btn-${this.theme}`
-            },
-            disabled () {
-                return this.isDisabled ? 'disabled' : ''
-            },
-            flat () {
-                return this.isFlat ? 'btn-flat' : ''
-            },
-            getAlign () {
-                switch (this.align) {
-                    case 'left':
-                    case 'right':
-                        break
-                    default:
-                        return ''
-                }
-
-                return 'pull-' + this.align
+            classes() {
+                return [`${prefixCls}`,{
+                    [`${prefixCls}-${this.theme}`]:this.theme ,
+                    [`${prefixCls}-block`]: this.block ,
+                    [`${prefixCls}-${this.size}`]: this.size,
+                    [`${prefixCls}-flat`]: this.flat ,
+                    [`disabled`]: this.disabled
+                }]
             }
         }
 

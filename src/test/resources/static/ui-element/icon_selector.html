@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<v-app :data="data">
-    <v-box title="图标使用">
+ <v-box title="图标使用">
     <v-form>
         <v-form-item label="图标">
             <div class="col-sm-7">
@@ -29,20 +21,9 @@
         </v-form-item>
     </v-form>
     </v-box>
-
-
-</v-app>
-</body>
-<script src="/lib/lib.js"></script>
-<script>
-    app.main({
-        data: {
-        } ,
-        methods: {
-        } ,
-        mounted : function () {
-
-        }
-    })
-</script>
-</html>
+ <script>
+     new Vue({
+         el:"#app" ,
+         data :{ }
+     })
+ </script>

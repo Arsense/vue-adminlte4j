@@ -19,16 +19,19 @@ target/
 nbproject/private/
 build/
 nbbuild/
-dist/
 nbdist/
 .nb-gradle/
 
 
 ### js
+package-lock.json
+node_modules/
 src/main/static/node_modules/
 src/main/static/dist/
 
 ##config
 src/main/resources/ui-model/
-src/main/static/dist/package-lock.json
+src/main/static/package-lock.json
+
+*.log
 

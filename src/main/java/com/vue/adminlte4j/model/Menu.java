@@ -1,9 +1,8 @@
 package com.vue.adminlte4j.model;
 
 import com.vue.adminlte4j.annotation.UIFormItem;
+import com.vue.adminlte4j.annotation.Validate;
 import com.vue.adminlte4j.model.form.FormItemType;
-
-import java.beans.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,23 +10,28 @@ import java.util.List;
 /**
  * Created by bjliuyong on 2017/11/23.
  */
-public class Menu implements Comparable<Menu> ,Serializable ,ITreeNode {
+public class Menu implements Comparable<Menu> ,Serializable ,ITreeNode  {
 
-    @UIFormItem(hidden = true)
     private String id ;
-    private String desc ;
-    @UIFormItem(hidden = true)
     private String pid ;
+
+    @UIFormItem
+    @Validate
+    private String desc ;
+
+    @UIFormItem
+    @Validate
     private String url ;
 
-    @UIFormItem(type = FormItemType.ICON_SELECTOR , label = "图标")
+    @UIFormItem(type = FormItemType.ICON_SELECTOR , label = "图标"  )
+    @Validate
     private String icon ;
+
     /**
      * 排序字段 ,倒序排列
      */
     private int order ;
 
-    @UIFormItem(ignore = true)
     private List<Menu> children ;
 
     public Menu(){
@@ -67,6 +71,10 @@ public class Menu implements Comparable<Menu> ,Serializable ,ITreeNode {
 
     public String getIcon() {
         return icon;
+    }
+
+    @Override public String getText() {
+        return this.getDesc();
     }
 
     public void setIcon(String icon) {
@@ -139,4 +147,5 @@ public class Menu implements Comparable<Menu> ,Serializable ,ITreeNode {
         sb.append('}');
         return sb.toString();
     }
+
 }

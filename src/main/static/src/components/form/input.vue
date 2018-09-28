@@ -1,33 +1,25 @@
 <template>
-    <input :type="type" class="form-control" :placeholder="placeholder" :value="currentValue" @input="handleInput">
+    <div :class="wrapClasses">
+        <input :type="type" class="layui-input"
+            :name="dynName"
+            :lay-verify="verify"
+            :placeholder="placeholder"
+            :value="v"
+            :disabled="disabled"
+            v-on:input="handleInput">
+    </div>
 </template>
 
 <script>
-
+import {baseInput}  from '../baseInput'
 export default {
-  name: 'v-input',
-  props: {
-    value: [String, Number],
-    placeholder: String,
-    type: {
-            type: String,
-            default: 'text'
+    mixins: [baseInput],
+    name: 'v-input',
+    props: {
+        type: {
+                type: String,
+                default: 'text'
+        }
     }
-  } ,
-  data() {
-    return {
-        currentValue : this.value
-    }
-  } ,
-  method: {
-    handleInput (event) {
-        let value = event.target.value
-        this.currentValue = value
-
-    },
-  } ,
-  mounted : function() {
-
-  }
 }
 </script>

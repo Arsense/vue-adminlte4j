@@ -1,5 +1,6 @@
 package com.vue.adminlte4j.model;
 
+import com.vue.adminlte4j.annotation.UIFormItem;
 import java.io.Serializable;
 
 /**
@@ -7,14 +8,37 @@ import java.io.Serializable;
  */
 public class AppInfo implements Serializable{
 
-    private String indexUrl     ;
+    @UIFormItem(label = "应用名称" )
     private String appName      ;
-    private String userName     ;
-    private String userImgUrl   ;
+
+    @UIFormItem(label = "首页地址" )
+    private String indexUrl     ;
+
+    @UIFormItem(label = "用户信息Url" )
     private String profileUrl   ;
+
+    @UIFormItem(label = "登出Url")
     private String signOutUrl   ;
+
+    @UIFormItem(label = "Logo名称")
     private String logoName     ;
+
+    @UIFormItem(label = "Logo名称缩写")
     private String logoShortName;
+
+    @UIFormItem(label = "版权信息")
+    private String copyright ;
+
+    @UIFormItem(label = "版本信息")
+    private String version ;
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public String getIndexUrl() {
         return indexUrl;
@@ -22,22 +46,6 @@ public class AppInfo implements Serializable{
 
     public void setIndexUrl(String indexUrl) {
         this.indexUrl = indexUrl;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserImgUrl() {
-        return userImgUrl;
-    }
-
-    public void setUserImgUrl(String userImgUrl) {
-        this.userImgUrl = userImgUrl;
     }
 
     public String getProfileUrl() {
@@ -72,11 +80,19 @@ public class AppInfo implements Serializable{
         this.logoShortName = logoShortName;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getCopyright() {
+        return copyright;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setCopyright(String copyright) {
+        this.copyright = copyright;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

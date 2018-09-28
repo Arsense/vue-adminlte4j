@@ -1,0 +1,54 @@
+<v-box title="图标选择器">
+    <v-form>
+        <v-form-item >
+            <v-form-item label="图标" inline="true" >
+                <v-icon-selector ref="a1" v-model="bind_value1"></v-icon-selector>
+            </v-form-item>
+            <v-form-item label="图标" inline="true" >
+                <v-icon-selector ref="a2" value="fa fa-refresh"></v-icon-selector>
+            </v-form-item>
+            <v-form-item label="图标" inline="true" >
+                <v-icon-selector ref="a3" v-model="bind_value2"></v-icon-selector>
+            </v-form-item>
+        </v-form-item>
+    </v-form>
+    <br>
+    <v-row>
+        <v-col>
+            <v-button @click="set_value">set_value</v-button>
+            <v-button @click="reset">reset</v-button>
+            <v-button @click="queryValues">get_value</v-button>
+            <br>
+            <br>
+            bind_value1: {{bind_value1}}<br>
+            bind_value2: {{bind_value2}}<br>
+            all_values:  {{all_values}}<br>
+        </v-col>
+    </v-row>
+</v-box>
+
+<script>
+new Vue({
+        el:"#app" ,
+        data : {
+            bind_value1: 'fa fa-link' ,
+            bind_value2: 'fa fa-rocket' ,
+            all_values:''
+
+        } ,
+        methods : {
+            set_value() {
+                this.$refs.a1.set_value("fa fa-reply")
+            } ,
+            queryValues() {
+                this.all_values = this.$refs.a1.get_value()
+            } ,
+            reset() {
+                debugger
+                this.$refs.a1.reset()
+                this.$refs.a2.reset()
+                this.$refs.a3.reset()
+            }
+        }
+    })
+</script>

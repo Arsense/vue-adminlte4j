@@ -1,23 +1,29 @@
 package com.vue.adminlte4j.model.form;
 
 /**
- * Created by bjliuyong on 2018/3/7.
+ * Created by bjliuyong on 2018/4/17.
  */
-public class FormItemType {
+public final class FormItemType {
+
+    public static final int DEFAULT         = 0;
+    public static final int INPUT           = 1;
+    public static final int RADIO           = 3;
+    public static final int CHECKBOX        = 4;
+    public static final int SWITCH          = 5;
+    public static final int SELECT          = 6;
+    public static final int ICON_SELECTOR   = 10;
+    public static final int DATE            = 12;
 
     /**
-     * 普通输入
+     * 判断是否需要配置字典拓展
+     * @param type
+     * @return
      */
-    public static final int INPUT = 0 ;
-
-    /**
-     * 图标选择器
-     */
-    public static final int ICON_SELECTOR = 10 ;
-
-    /**
-     * 隐藏域
-     */
-    public static final int INPUT_HIDDEN = 11 ;
+    public static boolean hasDict(int type) {
+        return type == FormItemType.CHECKBOX ||
+            type ==    FormItemType.RADIO ||
+            type ==    FormItemType.SWITCH ||
+            type ==    FormItemType.SELECT ;
+    }
 
 }

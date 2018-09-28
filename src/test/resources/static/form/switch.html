@@ -1,0 +1,69 @@
+<v-box title="开关">
+    <v-form-item label="开关">
+        <v-switch ref="a1" v-model="bind_value1"></v-switch>
+    </v-form-item>
+
+    <v-form-item label="开关">
+        <v-switch ref="a2" :items="items" v-model="bind_value2"></v-switch>
+    </v-form-item>
+
+    <v-form-item label="开关3">
+        <v-switch ref="a3" :items="items2" v-model="bind_value3"></v-switch>
+    </v-form-item>
+
+    <v-form-item label="开关3">
+        <v-switch ref="a4" :items="items2" v-model="bind_value3"></v-switch>
+    </v-form-item>
+
+    <br>
+    <v-row>
+        <v-col>
+            <v-button @click="set_value">set_value</v-button>
+            <v-button @click="reset">reset</v-button>
+            <v-button @click="queryValues">get_value</v-button>
+            <br>
+            <br>
+            bind_value1: {{bind_value1}}<br>
+            bind_value2: {{bind_value2}}<br>
+            bind_value3: {{bind_value3}}<br>
+            all_values:  {{all_values}}<br>
+        </v-col>
+    </v-row>
+</v-box>
+
+<script>
+new Vue({
+        el:"#app" ,
+        data : {
+            items : [
+                {code:true ,  label:'true' },
+                {code:false ,   label:'false'}
+            ],
+            items2 : [
+                {code:'a' ,  label:'OPEN' },
+                {code:'b' ,   label:'CLOSE'}
+            ],
+            bind_value1: 1 ,
+            bind_value2: false ,
+            bind_value3: 'a' ,
+            all_values:''
+
+        } ,
+        methods : {
+            set_value() {
+                this.$refs.a1.set_value(1)
+                this.$refs.a2.set_value(true)
+                this.$refs.a3.set_value('b')
+            } ,
+            queryValues() {
+                this.all_values = this.$refs.a1.get_value()
+            } ,
+            reset() {
+                debugger
+                this.$refs.a1.reset()
+                this.$refs.a2.reset()
+                this.$refs.a3.reset()
+            }
+        }
+    })
+</script>

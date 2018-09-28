@@ -2,7 +2,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const path = require('path')
 var p = path.resolve(__dirname, '../')
 const lib_names = ['jquery/dist' , 'admin-lte/dist' , 'bootstrap/dist' , 'font-awesome/css' ,
-    'font-awesome/fonts' , 'select2/dist' ,'vue/dist' , 'axios/dist' ,'bootstrap-treeview/dist' ]
+    'font-awesome/fonts' , 'select2/dist' ,'vue/dist' , 'axios/dist' ,'layui-src/dist']
 const copyLibDir = []
 for(var index in lib_names) {
     var lib_name = lib_names[index]
@@ -12,8 +12,8 @@ for(var index in lib_names) {
 copyLibDir.push({from: __dirname + '/src/lib/lib.js' , to :__dirname + '/dist/lib'})
 copyLibDir.push({from: __dirname + '/src/lib/base.js' , to :__dirname + '/dist/lib'})
 copyLibDir.push({from: __dirname + '/src/lib/plugin' , to :__dirname + '/dist/lib'})
-copyLibDir.push({from: __dirname + '/index.html' , to :__dirname + '/dist/'})
-copyLibDir.push({from: __dirname + '/static' , to : __dirname + '/dist/lib/vue-adminlte/dist'})
+copyLibDir.push({from: __dirname + '/src/img' , to : __dirname + '/dist/lib/vue-adminlte/dist/img'})
+copyLibDir.push({from: __dirname + '/src/css' , to : __dirname + '/dist/lib/vue-adminlte/dist/css'})
 module.exports = {
     entry:  __dirname + "/src/main.js",//已多次提及的唯一入口文件
     output: {
@@ -25,6 +25,11 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
+            }
+            ,
+            {
+                test: /\.js$/ ,
+                loader: 'babel-loader'
             }
         ]
     } ,

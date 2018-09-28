@@ -1,3 +1,34 @@
+/*!
+ @Title: lib.js
+ @Description：前端框架
+ @Site: www.xxx.com
+ @Author: andre
+ @License：MIT
+ */
+;!function(win){
+    "use strict";
+    var doc = document
+        //获取lib所在目录
+        ,getPath = function(){
+            var jsPath = doc.currentScript ? doc.currentScript.src : function(){
+                    var js = doc.scripts
+                        ,last = js.length - 1
+                        ,src;
+                    for(var i = last; i > 0; i--){
+                        if(js[i].readyState === 'interactive'){
+                            src = js[i].src;
+                            break;
+                        }
+                    }
+                    return src || js[last].src;
+                }();
+            return jsPath.substring(0, jsPath.lastIndexOf('/') + 1);
+        }()
+    win.libpath = getPath
+
+}(window);
+
+
 LazyLoad = function(global) {
 
     var isIE = !1
@@ -131,23 +162,24 @@ app = function (scope) {
     function init(config) {
 
         var load_css = function (css) { document.write('<link href="'  + css + '" rel="stylesheet">') }
+        var body_el = document.getElementsByTagName('body')
+        body_el[0].setAttribute('style' , 'display:none')
+        body_el[0].setAttribute('class' , 'hold-transition skin-blue sidebar-mini')
         var el = document.getElementsByTagName('v-app')
         el[0].setAttribute("id","app")
-        var body_el = document.getElementsByTagName('body')
-        body_el[0].setAttribute('class' , 'hold-transition skin-blue sidebar-mini')
-        body_el[0].setAttribute('style' , 'display:none')
-
         var arr_js = ['/lib/jquery/dist/jquery.min.js' ,
             '/lib/vue/dist/vue.min.js' ,
             '/lib/axios/dist/axios.min.js'
+
         ]
+
 
         var js = [
             '/lib/vue-adminlte/dist/js/vue-adminlte.min.js',
             '/lib/bootstrap/dist/js/bootstrap.min.js' ,
-            '/lib/admin-lte/dist/js/adminlte.js' ,
+            '/lib/admin-lte/dist/js/adminlte.js',
             '/lib/bootstrap-treeview/dist/bootstrap-treeview.min.js' ,
-            '/lib/layer/layer.js' ,
+            '/lib/layui-src/dist/layui.js' ,
             '/lib/base.js'
         ]
 
@@ -166,6 +198,8 @@ app = function (scope) {
         for(var i = 0; i < css.length; i++) {
             load_css(css[i] + ".min.css")
         }
+        load_css('/lib/layui-src/dist/css/layui.css')
+        load_css('/lib/vue-adminlte/dist/css/base.css')
         for(var i = 0; i < js.length; i++) {
             arr_js.push(js[i])
         }
@@ -175,7 +209,7 @@ app = function (scope) {
             var watch = config.watch || {}
             var methods = config.methods || function(){}
             var mounted = config.mounted || function(){}
-            new Vue({
+            return new Vue({
                 el: '#app',
                 data: function(){
                     return data;
@@ -183,10 +217,12 @@ app = function (scope) {
                 watch: watch ,
                 methods: methods ,
                 mounted: function () {
-                    $('body').data('lte.layout').fix()
-                    $('body').data('lte.layout').fixSidebar()
+                    if($('body').data('lte.layout')){
+                        $('body').data('lte.layout').fix()
+                        $('body').data('lte.layout').fixSidebar()
+                    }
                     body_el[0].setAttribute('style' , 'display:block')
-                    mounted(this)
+                    mounted.apply(this)
                 }
             })
         }
@@ -198,19 +234,20 @@ app = function (scope) {
                 return config;
             }, function (error) {
                 // Do something with request error
-                return Promise.reject(error);
+                //return Promise.reject(error);
+                return
             });
 
             // Add a response interceptor
             axios.interceptors.response.use(function (response) {
-
-                if(response.data.is_login == false) {
-                    window.location.href = response.data.login_url ;
-                }
-                return response;
+                if(response.data.is_login == false)
+                    window.location.href = response.data.login_url
+                return response
             }, function (error) {
-                // Do something with response error
-                return Promise.reject(error);
+                if(error.response.status == 401) //401 未授权
+                    window.location.href = (error.response.headers.location || error.response.headers.Location)
+                // Do something with response error Promise.reject(error);
+                return
             });
 
             var base_config = {
@@ -226,19 +263,9 @@ app = function (scope) {
             } else {
                 _data =  config.data || {}
             }
-            if(!base_config.is_syn) {
-                axios.get(base_config.api).then(function (response) {
-                    var data = {data : response.data}
-                    $.extend(data , _data)
-                    new_vue(data , config)
-                }).catch(function (error) {
-                    console.log(error);
-                })
-            } else {
-                new_vue(_data , config)
-            }
-
-
+            var data = {data :{}}
+            $.extend(data , _data )
+            new_vue(data , config)
         })
     }
 
@@ -249,6 +276,3 @@ app = function (scope) {
     }
 }(this) ;
 
-
-(function() {
-})();

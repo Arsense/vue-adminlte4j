@@ -1,82 +1,50 @@
 <template>
-    <form class="form-horizontal">
+    <div class="layui-form" :lay-filter="dynName">
         <slot></slot>
-        <template v-for="item in items">
-            <template v-if="!item.ignore">
-                <div v-if="item['type'] === 0 " :class="item.hidden?'hidden':'col-md-12'">
-                    <div class="form-group">
-                      <label  class="col-sm-2 control-label">{{item['label']}}</label>
-                      <div class="col-sm-9">
-                          <input type="text" class="form-control" :id="item.key" :value="buildVal(item)" :placeholder="item.placeholder">
-                      </div>
-                    </div>
-                </div>
-                <div v-if="item['type'] === 10 " class="col-md-12">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">{{item.label}}:</label>
-                        <div class="col-sm-9">
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <i data-bv-icon-for="icon" :id="item['key'] + '_i'" :class="'form-control-feedback ' + buildVal(item)" style="right: 15px;"></i>
-                                    <input type="text" :id="item.key" name="item['key']"  class="form-control" :value="buildVal(item)" :placeholder="item.placeholder">
-                                </div>
-                                <div class="col-sm-2">
-                                    <v-icon-selector :icon_el="'#' + item.key + '_i #' + item.key " ></v-icon-selector>
-                                </div>
+        <template v-if="form_inline">
+            <template v-for="(row , index) in row_items">
+                        <div class="layui-form-item">
+                            <template v-for="item in row">
+                               <v-base-form-item :inline="true" :item="item" :ref="item.key" :value="buildVal(item)"></v-base-form-item>
+                            </template>
+                            <div v-if="index== (row_items.length-1)" class="layui-inline">
+                                <slot name="inline"></slot>
                             </div>
                         </div>
-                    </div>
+            </template>
+        </template>
+        <template v-else>
+            <template v-for="(row , index) in row_items">
+                <div class="layui-col-space10 layui-form-item">
+                    <template v-for="item in row">
+                       <v-base-form-item :inline="false" :item="item" :ref="item.key" :value="buildVal(item)"></v-base-form-item>
+                    </template>
                 </div>
             </template>
         </template>
-    </form>
+        <div v-if="submit_url" class="layui-col-space10 layui-form-item text-center"
+            style="border-top: solid 1px #d2d6de;padding-top: 8px; margin-bottom:2px">
+            <button class="layui-btn" @click="internal_submit">
+                <li class="fa fa-save">&nbsp;提交</li>
+            </button>
+            <button v-if="has_reset =='true'" class="layui-btn layui-btn-primary" @click="reset">
+                           <li class="fa fa-reply">&nbsp;重置</li>
+            </button>
+        </div>
+        <template v-if="$slots.footer">
+            <slot name="footer"></slot>
+        </template>
+    </div>
 </template>
 
 <script>
-import IconSelector  from '../ui-element/button/icon-selector-btn.vue'
+import BaseFormItem   from './base-form-item.vue'
+import {baseForm}  from './baseForm'
 export default {
-  name: 'v-form',
-  props: {
-    ajax_url : String
-  } ,
-  data : function() {
-    return {
-      items:[] ,
-      data : {}
+    mixins: [baseForm ],
+    name: 'v-form',
+    components : {
+        'v-base-form-item': BaseFormItem,
     }
-  } ,
-  methods: {
-    refresh: function(data) {
-        if(this.ajax_url) {
-            var self=this
-            axios.get(this.ajax_url , {params:data}).then(function (response) {
-                var formJson = response.data.FormModel.formItems
-                self.items = formJson
-                self.data = response.data.data
-            })
-        }
-    } ,
-    buildVal: function(item) {
-        var val = this.data[item.key]
-        if(0 == val) {
-            return val
-        }
-        return val || item.defVal
-    } ,
-
-    formData: function() {
-        var jsonData = {}
-        this.items.forEach(function(item){
-            jsonData[item.key] = $("#" + item.key).val()
-        })
-        return jsonData
-    }
-  } ,
-  mounted : function() {
-    this.refresh()
-  } ,
-  components: {
-        'v-icon-selector': IconSelector
-  }
 }
 </script>
